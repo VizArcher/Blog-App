@@ -6,20 +6,23 @@ const Post = require('./models/Post')
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const cookieParser = require('cookie-parser');
-const multer = require('multer');
+const multer = require('multer'); 
+require('dotenv').config();
 const uploadMiddleware = multer({dest: 'uploads/'}); 
 const fs = require('fs');
 const app = express();
 
 const salt = bcrypt.genSaltSync(10);
-const secret = 'owrfnionvp3249409rnoern';
+const MONGODB_URI = process.env.MONGODB_URI;
+const PORT = process.env.PORT || 4000;
+const secret = process.env.JWT_SECRET;
 
 app.use(cors({credentials:true, origin:'http://localhost:5173'}));
 app.use(express.json());
 app.use(cookieParser());
 app.use('/uploads', express.static(__dirname + '/uploads'));
 
-mongoose.connect('mongodb+srv://blog:GPVElbmt2Qcr0jk1@cluster0.zdon1tj.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0');
+mongoose.connect(MONGODB_URI, { useNewUrlParser: true, useUnifiedTopology: true });
 
 app.post("/register", async (req, res) => {
     const {username, password} = req.body;
@@ -142,6 +145,5 @@ app.get('/post/:id', async (req, res) => {
 })
 ;
 
-app.listen(4000);
+app.listen(PORT);
 
-// GPVElbmt2Qcr0jk1
