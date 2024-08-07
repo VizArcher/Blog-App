@@ -9,17 +9,26 @@ const cookieParser = require('cookie-parser');
 const multer = require('multer');
 const uploadMiddleware = multer({dest: 'uploads/'}); 
 const fs = require('fs');
+require('dotenv').config();
 const app = express();
+const path = require('path');
 
+
+const PORT = process.env.PORT || 4000;
+const MONGODB_URI = process.env.MONGODB_URI;
 const salt = bcrypt.genSaltSync(10);
-const secret = 'owrfnionvp3249409rnoern';
+const secret = process.env.JWT_SECRET;
+const clientURL = process.env.CLIENT_URL || 'http://localhost:5173';
 
-app.use(cors({credentials:true, origin:'http://localhost:5173'}));
+app.use(cors({credentials:true, origin:clientURL}));
 app.use(express.json());
 app.use(cookieParser());
 app.use('/uploads', express.static(__dirname + '/uploads'));
 
-mongoose.connect('mongodb+srv://blog:GPVElbmt2Qcr0jk1@cluster0.zdon1tj.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0');
+mongoose.connect(MONGODB_URI);
+
+// Serve static files from the React app
+app.use(express.static(path.join(__dirname, '..', 'client', 'dist')));
 
 app.post("/register", async (req, res) => {
     const {username, password} = req.body;
@@ -139,9 +148,11 @@ app.get('/post/:id', async (req, res) => {
     const {id} = req.params;
     const postDoc = await Post.findById(id).populate('author', ['username']);
     res.json(postDoc);
-})
-;
+});
 
-app.listen(4000);
+// Catch all handler to serve the React app for any route not handled by your API
+app.get('*', (req, res) => {
+    res.sendFile(path.join(__dirname, '..', 'client', 'dist', 'index.html'));
+  });
 
-// GPVElbmt2Qcr0jk1
+app.listen(PORT);
