@@ -16,7 +16,7 @@ The Blog-App is a Blog Website with Frontend made of ReactJS and a Backend made 
 ## ScreenShot
 
 ### Register Page
-![Register Page](https://drive.google.com/drive/u/1/folders/1UBU109MwReeGy8t2UW4tf4S6FpPXSJr4)
+![Register Page](https://github.com/VizArcher/Blog-App/blob/main/Images/Register%20Page.png)
 
 ### Login Page
 ![Login Pagr]()
